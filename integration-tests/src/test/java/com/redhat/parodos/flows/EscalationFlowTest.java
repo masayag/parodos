@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Gloria Ciavarrini (Github: gciavarrini)
  */
 @Slf4j
-public class EscalationFlow extends BaseIntegrationTest {
+public class EscalationFlowTest extends BaseIntegrationTest {
 
 	private static final String projectName = "project-1";
 
@@ -52,7 +52,7 @@ public class EscalationFlow extends BaseIntegrationTest {
 
 		assertNotNull(workFlowStatusResponseDTO);
 		assertNotNull(workFlowStatusResponseDTO.getWorkFlowExecutionId());
-		assertEquals(WorkFlowResponseDTO.WorkStatusEnum.COMPLETED.toString(), workFlowStatusResponseDTO.getStatus());
+		assertEquals(WorkFlowStatusResponseDTO.StatusEnum.COMPLETED, workFlowStatusResponseDTO.getStatus());
 		log.info("******** Simple Escalation Flow {} ********", workFlowStatusResponseDTO.getStatus());
 	}
 

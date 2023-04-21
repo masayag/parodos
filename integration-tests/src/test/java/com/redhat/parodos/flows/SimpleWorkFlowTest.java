@@ -10,6 +10,7 @@ import com.redhat.parodos.sdk.api.WorkflowDefinitionApi;
 import com.redhat.parodos.sdk.invoker.ApiException;
 import com.redhat.parodos.sdk.model.ArgumentRequestDTO;
 import com.redhat.parodos.sdk.model.ProjectResponseDTO;
+import com.redhat.parodos.sdk.model.WorkDefinitionResponseDTO;
 import com.redhat.parodos.sdk.model.WorkFlowDefinitionResponseDTO;
 import com.redhat.parodos.sdk.model.WorkFlowRequestDTO;
 import com.redhat.parodos.sdk.model.WorkFlowResponseDTO;
@@ -18,8 +19,6 @@ import com.redhat.parodos.sdk.model.WorkFlowStatusResponseDTO;
 import com.redhat.parodos.sdk.model.WorkRequestDTO;
 import com.redhat.parodos.sdkutils.SdkUtils;
 import com.redhat.parodos.workflow.consts.WorkFlowConstants;
-import com.redhat.parodos.workflow.enums.WorkFlowType;
-import com.redhat.parodos.workflow.enums.WorkType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ import static org.junit.Assert.assertTrue;
  * @author Gloria Ciavarrini (Github: gciavarrini)
  */
 @Slf4j
-public class SimpleWorkFlow extends BaseIntegrationTest {
+public class SimpleWorkFlowTest extends BaseIntegrationTest {
 
 	private static final String projectName = "project-1";
 
@@ -61,18 +60,21 @@ public class SimpleWorkFlow extends BaseIntegrationTest {
 				simpleSequentialWorkFlowDefinition.getName());
 		assertEquals(WorkFlowDefinitionResponseDTO.ProcessingTypeEnum.SEQUENTIAL,
 				simpleSequentialWorkFlowDefinition.getProcessingType());
-		assertEquals(WorkFlowType.INFRASTRUCTURE.toString(), simpleSequentialWorkFlowDefinition.getType());
+		assertEquals(WorkFlowDefinitionResponseDTO.TypeEnum.INFRASTRUCTURE,
+				simpleSequentialWorkFlowDefinition.getType());
 
 		assertNotNull(simpleSequentialWorkFlowDefinition.getWorks());
 		assertEquals(2, simpleSequentialWorkFlowDefinition.getWorks().size());
 		assertEquals("restCallTask", simpleSequentialWorkFlowDefinition.getWorks().get(0).getName());
-		assertEquals(WorkType.TASK.toString(), simpleSequentialWorkFlowDefinition.getWorks().get(0).getWorkType());
+		assertEquals(WorkDefinitionResponseDTO.WorkTypeEnum.TASK,
+				simpleSequentialWorkFlowDefinition.getWorks().get(0).getWorkType());
 		assertTrue(CollectionUtils.isEmpty(simpleSequentialWorkFlowDefinition.getWorks().get(0).getWorks()));
 		assertNull(simpleSequentialWorkFlowDefinition.getWorks().get(0).getProcessingType());
 		assertNotNull(simpleSequentialWorkFlowDefinition.getWorks().get(0).getParameters());
 
 		assertEquals("loggingTask", simpleSequentialWorkFlowDefinition.getWorks().get(1).getName());
-		assertEquals(WorkType.TASK.toString(), simpleSequentialWorkFlowDefinition.getWorks().get(1).getWorkType());
+		assertEquals(WorkDefinitionResponseDTO.WorkTypeEnum.TASK,
+				simpleSequentialWorkFlowDefinition.getWorks().get(1).getWorkType());
 		assertTrue(CollectionUtils.isEmpty(simpleSequentialWorkFlowDefinition.getWorks().get(1).getWorks()));
 		assertNull(simpleSequentialWorkFlowDefinition.getWorks().get(1).getProcessingType());
 		assertNotNull(simpleSequentialWorkFlowDefinition.getWorks().get(1).getParameters());
@@ -106,9 +108,10 @@ public class SimpleWorkFlow extends BaseIntegrationTest {
 		WorkFlowStatusResponseDTO workFlowStatusResponseDTO = SdkUtils.waitWorkflowStatusAsync(workflowApi,
 				workFlowResponseDTO.getWorkFlowExecutionId());
 
+		assertNotNull(workFlowStatusResponseDTO);
 		assertNotNull(workFlowStatusResponseDTO.getWorkFlowExecutionId());
 		assertNotNull(workFlowStatusResponseDTO.getStatus());
-		assertEquals(WorkStatusEnum.COMPLETED, workFlowStatusResponseDTO.getStatus());
+		assertEquals(WorkFlowStatusResponseDTO.StatusEnum.COMPLETED, workFlowStatusResponseDTO.getStatus());
 		log.info("workflow finished successfully with response: {}", workFlowResponseDTO);
 		log.info("******** Simple Sequence Flow Completed ********");
 	}

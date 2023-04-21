@@ -78,11 +78,6 @@
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -113,4 +108,45 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!--
+         Integration test profile.
+         Explicitly triggered with -P integrationtest or by environment variable "integrationtest" set
+         -->
+        <profile>
+            <id>integration-test</id>
+            <activation>
+                <property>
+                    <name>integration-test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <trimStackTrace>false</trimStackTrace>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                                <include>**/*FlowTest.java</include>
+                                <include>**/integration/**/*.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/integration/notification/**/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

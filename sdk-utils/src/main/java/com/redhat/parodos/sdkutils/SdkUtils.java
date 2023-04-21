@@ -24,7 +24,6 @@ import com.redhat.parodos.sdk.model.ProjectRequestDTO;
 import com.redhat.parodos.sdk.model.ProjectResponseDTO;
 import com.redhat.parodos.sdk.model.WorkFlowStatusResponseDTO;
 import com.redhat.parodos.workflow.utils.CredUtils;
-import com.redhat.parodos.workflows.work.WorkStatus;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +37,8 @@ import org.springframework.core.env.MissingRequiredPropertiesException;
 @Slf4j
 public abstract class SdkUtils {
 
+	private static String serverIp = "localhost";
+
 	private SdkUtils() {
 	}
 
@@ -49,7 +50,7 @@ public abstract class SdkUtils {
 	public static ApiClient getParodosAPiClient() throws ApiException, MissingRequiredPropertiesException {
 		ApiClient apiClient = Configuration.getDefaultApiClient();
 		CustomPropertiesReader reader = new CustomPropertiesReader();
-		String serverIp = reader.getServerIp();
+		serverIp = reader.getServerIp();
 		String serverPort = reader.getServerPort();
 
 		if (Strings.isNullOrEmpty(serverIp) || Strings.isNullOrEmpty(serverPort)) {
@@ -75,8 +76,8 @@ public abstract class SdkUtils {
 		String xsrfToken = null;
 		String JSessionID = null;
 		if (cookieHeaders != null) {
-			xsrfToken = getCookieValue(cookieHeaders, xsrfToken, "XSRF-TOKEN");
-			JSessionID = getCookieValue(cookieHeaders, JSessionID, "JSESSIONID");
+			xsrfToken = getCookieValue(cookieHeaders, "XSRF-TOKEN");
+			JSessionID = getCookieValue(cookieHeaders, "JSESSIONID");
 		}
 
 		log.debug("Found X-CSRF-TOKEN: {} and JSessionID: {}", xsrfToken, JSessionID);
@@ -89,16 +90,17 @@ public abstract class SdkUtils {
 	}
 
 	@Nullable
-	private static String getCookieValue(List<String> cookieHeaders, String xsrfToken, String anObject) {
+	private static String getCookieValue(List<String> cookieHeaders, String anObject) {
+		String token = null;
 		for (String cookieHeader : cookieHeaders) {
-			xsrfToken = Stream.of(cookieHeader.split(";")).map(cookie -> cookie.trim().split("="))
+			token = Stream.of(cookieHeader.split(";")).map(cookie -> cookie.trim().split("="))
 					.filter(parts -> parts.length == 2 && parts[0].equals(anObject)).findFirst().map(parts -> parts[1])
 					.orElse(null);
-			if (xsrfToken != null) {
+			if (token != null) {
 				break;
 			}
 		}
-		return xsrfToken;
+		return token;
 	}
 
 	/**
@@ -118,7 +120,7 @@ public abstract class SdkUtils {
 
 			@Override
 			public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-
+				log.info("onFailure {}", e.getMessage());
 				try {
 					f.execute(this);
 				}
@@ -208,7 +210,7 @@ public abstract class SdkUtils {
 		WorkFlowStatusResponseDTO workFlowStatusResponseDTO = waitAsyncResponse(new FuncExecutor<>() {
 			@Override
 			public boolean check(WorkFlowStatusResponseDTO result) {
-				return !result.getStatus().equals(WorkStatus.COMPLETED.toString());
+				return !result.getStatus().equals(WorkFlowStatusResponseDTO.StatusEnum.COMPLETED);
 			}
 
 			@Override
@@ -331,6 +333,10 @@ public abstract class SdkUtils {
 			throw new ApiException("Can retrieve project with name " + projectName);
 		}
 		return testProject;
+	}
+
+	public static String getServerIp() {
+		return serverIp;
 	}
 
 }
