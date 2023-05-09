@@ -1,16 +1,5 @@
 package com.redhat.parodos.sdkutils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Strings;
 import com.redhat.parodos.sdk.api.LoginApi;
 import com.redhat.parodos.sdk.api.ProjectApi;
@@ -24,12 +13,20 @@ import com.redhat.parodos.sdk.model.ProjectRequestDTO;
 import com.redhat.parodos.sdk.model.ProjectResponseDTO;
 import com.redhat.parodos.sdk.model.WorkFlowStatusResponseDTO;
 import com.redhat.parodos.workflow.utils.CredUtils;
-import com.redhat.parodos.workflows.work.WorkStatus;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.core.env.MissingRequiredPropertiesException;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 /***
  * A utility class to ease the writing of new examples.
@@ -208,7 +205,7 @@ public abstract class SdkUtils {
 		WorkFlowStatusResponseDTO workFlowStatusResponseDTO = waitAsyncResponse(new FuncExecutor<>() {
 			@Override
 			public boolean check(WorkFlowStatusResponseDTO result) {
-				return !result.getStatus().equals(WorkStatus.COMPLETED.toString());
+				return !result.getStatus().equals(WorkFlowStatusResponseDTO.StatusEnum.COMPLETED);
 			}
 
 			@Override
