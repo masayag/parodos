@@ -1,5 +1,7 @@
 package com.redhat.parodos.examples.prebuilt;
 
+import java.util.Optional;
+
 import com.redhat.parodos.tasks.notification.NotificationWorkFlowTask;
 import com.redhat.parodos.workflow.annotation.Infrastructure;
 import com.redhat.parodos.workflow.consts.WorkFlowConstants;
@@ -16,7 +18,9 @@ public class PrebuiltWorkFlowConfiguration {
 
 	@Bean
 	NotificationWorkFlowTask notificationTask() {
-		return new NotificationWorkFlowTask("http://localhost:8081",
+		String serverIp = Optional.ofNullable(System.getenv("SERVER_IP")).orElse("localhost");
+		String serverPort = Optional.ofNullable(System.getenv("SERVER_PORT")).orElse("8080");
+		return new NotificationWorkFlowTask("http://" + serverIp + ":" + serverPort,
 				"Basic " + CredUtils.getBase64Creds("test", "test"));
 	}
 
