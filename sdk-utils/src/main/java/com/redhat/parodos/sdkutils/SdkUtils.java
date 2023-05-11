@@ -2,6 +2,7 @@ package com.redhat.parodos.sdkutils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -44,17 +45,17 @@ public abstract class SdkUtils {
 
 	/**
 	 * Creates and configures the APIClient using the configuration properties available
-	 * in `application.yml`
+	 * in `sdk-config.yml`
 	 * @return the ApiClient
 	 */
 	public static ApiClient getParodosAPiClient() throws ApiException, MissingRequiredPropertiesException {
 		ApiClient apiClient = Configuration.getDefaultApiClient();
-		CustomPropertiesReader reader = new CustomPropertiesReader();
-		serverIp = reader.getServerIp();
-		String serverPort = reader.getServerPort();
+		// CustomPropertiesReader reader = new CustomPropertiesReader();
+		serverIp = Optional.ofNullable(System.getenv("SERVER_IP")).orElse("localhost");
+		String serverPort = Optional.ofNullable(System.getenv("SERVER_PORT")).orElse("8080");
 
 		if (Strings.isNullOrEmpty(serverIp) || Strings.isNullOrEmpty(serverPort)) {
-			throw new MissingRequiredPropertiesException();
+			throw new IllegalArgumentException("SERVER_IP and SERVER_PORT must be set");
 		}
 
 		int port = Integer.parseInt(serverPort);
@@ -171,7 +172,7 @@ public abstract class SdkUtils {
 		lock.lock();
 		try {
 			// should be more than enough
-			response.await(60, TimeUnit.SECONDS);
+			response.await(30, TimeUnit.SECONDS);
 			if (asyncResult.getError() != null) {
 				throw new ApiException(
 						"An error occurred while executing waitAsyncResponse: " + asyncResult.getError());
