@@ -82,7 +82,7 @@ public class BeanWorkFlowRegistryImpl implements WorkFlowRegistry {
 			workFlows = new HashMap<>();
 			workFlowTasks = new HashMap<>();
 		}
-		log.info(">> Detected {} WorkFlow and {} workFlowTasks from the Bean Registry", workFlows.size(),
+		log.info(">>>>>>>>>> Detected {} WorkFlow and {} workFlowTasks from the Bean Registry", workFlows.size(),
 				workFlowTasks.size());
 	}
 

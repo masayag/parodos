@@ -15,6 +15,8 @@
  */
 package com.redhat.parodos;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -38,9 +40,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties
 @ConfigurationPropertiesScan("com.redhat.parodos")
+@Slf4j
 public class WorkflowServiceApplication {
 
 	public static void main(String[] args) {
+		log.info("1 >>>>>>>> Starting Workflow Service");
 		SpringApplication.run(WorkflowServiceApplication.class, args);
 	}
 

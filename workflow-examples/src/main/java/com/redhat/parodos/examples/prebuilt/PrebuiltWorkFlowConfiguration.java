@@ -17,7 +17,7 @@ public class PrebuiltWorkFlowConfiguration {
 
 	@Bean
 	NotificationWorkFlowTask notificationTask() {
-		return new NotificationWorkFlowTask("http://"+ SdkUtils.getServerIp()  + ":8081",
+		return new NotificationWorkFlowTask("http://" + SdkUtils.getServerIp() + ":8081",
 				"Basic " + CredUtils.getBase64Creds("test", "test"));
 	}
 
