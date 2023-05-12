@@ -14,10 +14,4 @@ spec:
             name: workflow-service
             port:
               number: 8080
-      - pathType: Prefix
-        path: /notification-service
-        backend:
-          service:
-            name: notification-service
-            port:
-              number: 8080
+
