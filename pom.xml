@@ -63,6 +63,7 @@
         <openapi.generator.version>6.4.0</openapi.generator.version>
         <gson-fire-version>1.8.5</gson-fire-version>
         <snakeyaml-version>1.28</snakeyaml-version>
+        <spotbugs.version>4.7.3.4</spotbugs.version>
     </properties>
     <modules>
         <module>workflow-engine</module>
@@ -225,6 +226,18 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -235,6 +248,10 @@
             <plugin>
                 <groupId>net.revelc.code</groupId>
                 <artifactId>impsort-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
